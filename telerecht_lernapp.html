@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telekommunikationsrecht – Lernapp ETH</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --bg2: #111520;
+    --bg3: #181d2a;
+    --card: #1a2035;
+    --border: #252d42;
+    --accent: #4f7fff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* LAYOUT */
+  .shell { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    padding: 22px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .sidebar-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .sidebar-progress {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; font-family: 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width .4s ease; }
+  .progress-count { font-size: 11px; color: var(--text3); margin-top: 5px; font-family: 'DM Mono', monospace; }
+
+  .sidebar-nav { padding: 10px 0; flex: 1; }
+  .nav-group-label {
+    padding: 10px 20px 4px;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background .15s;
+    border-left: 2px solid transparent;
+    font-size: 13.5px;
+    color: var(--text2);
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(79,127,255,.1); border-left-color: var(--accent); color: #fff; }
+  .nav-item .num {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    flex-shrink: 0;
+    color: var(--text3);
+  }
+  .nav-item.active .num { background: var(--accent); color: #fff; }
+  .nav-item .done-mark { margin-left: auto; font-size: 12px; color: var(--accent3); }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    max-width: 860px;
+    padding: 40px 48px;
+  }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* SECTION HEADER */
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.15;
+  }
+  .section-subtitle {
+    color: var(--text2);
+    font-size: 15px;
+    margin-bottom: 32px;
+    max-width: 560px;
+  }
+
+  /* CONTENT CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(79,127,255,.15);
+    color: var(--accent);
+    letter-spacing: .05em;
+  }
+  .card-title .badge.green { background: rgba(16,185,129,.12); color: var(--accent3); }
+  .card-title .badge.orange { background: rgba(245,158,11,.12); color: var(--warn); }
+
+  .card p { color: var(--text2); margin-bottom: 8px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--text); font-weight: 500; }
+
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  .tbl th {
+    background: var(--bg3);
+    padding: 9px 12px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+  }
+  .tbl td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(37,45,66,.6);
+    color: var(--text2);
+    vertical-align: top;
+  }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl td strong { color: var(--text); }
+  .tbl tr:hover td { background: rgba(255,255,255,.02); }
+
+  /* HIGHLIGHT BOX */
+  .hbox {
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    border-left: 3px solid;
+  }
+  .hbox.blue { background: rgba(79,127,255,.08); border-color: var(--accent); }
+  .hbox.green { background: rgba(16,185,129,.08); border-color: var(--accent3); }
+  .hbox.orange { background: rgba(245,158,11,.08); border-color: var(--warn); }
+  .hbox.purple { background: rgba(124,58,237,.1); border-color: var(--accent2); }
+  .hbox strong { color: #fff; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg2);
+  }
+  .tl-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .tl-title { font-weight: 600; color: #fff; font-size: 14px; margin-bottom: 3px; }
+  .tl-desc { color: var(--text2); font-size: 13.5px; }
+
+  /* QUIZ */
+  .quiz-q {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .quiz-opt {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+    transition: all .2s;
+    font-size: 14px;
+    color: var(--text2);
+    text-align: left;
+  }
+  .quiz-opt:hover { border-color: var(--accent); color: #fff; background: rgba(79,127,255,.06); }
+  .quiz-opt.correct { border-color: var(--accent3); background: rgba(16,185,129,.1); color: #fff; }
+  .quiz-opt.wrong { border-color: var(--danger); background: rgba(239,68,68,.1); color: var(--text2); }
+  .quiz-opt.disabled { cursor: not-allowed; }
+  .quiz-explanation {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13.5px;
+    color: var(--text2);
+    margin-bottom: 16px;
+    display: none;
+  }
+  .quiz-explanation strong { color: #fff; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #3d6ee8; }
+  .btn-ghost { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: #fff; border-color: var(--text3); }
+  .quiz-counter { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); margin-bottom: 20px; letter-spacing: .08em; }
+
+  /* FLASHCARDS */
+  .flashcard-wrap { perspective: 1000px; margin: 0 auto 24px; max-width: 560px; }
+  .flashcard {
+    width: 100%;
+    min-height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .5s;
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-front, .fc-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    padding: 28px 30px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 180px;
+  }
+  .fc-front {
+    background: linear-gradient(135deg, var(--card), var(--bg3));
+    border: 1px solid var(--border);
+  }
+  .fc-back {
+    background: linear-gradient(135deg, rgba(79,127,255,.12), rgba(124,58,237,.12));
+    border: 1px solid rgba(79,127,255,.3);
+    transform: rotateY(180deg);
+  }
+  .fc-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .12em; color: var(--text3); text-transform: uppercase; margin-bottom: 12px; }
+  .fc-content { font-size: 15px; color: var(--text); line-height: 1.5; }
+  .fc-back .fc-content { color: var(--text); font-size: 14px; }
+  .fc-hint { font-size: 11px; color: var(--text3); margin-top: 12px; }
+  .fc-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
+  .fc-prog { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text3); }
+
+  /* BEHÖRDEN DIAGRAM */
+  .behoerden {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .bcard {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .bcard .name {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .bcard .role { font-size: 13px; color: var(--text2); }
+
+  /* CASE FILES */
+  .casecard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .casecard-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: background .15s;
+  }
+  .casecard-head:hover { background: rgba(255,255,255,.02); }
+  .casecard-head.open { border-bottom-color: var(--border); }
+  .casecard-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(245,158,11,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .casecard-meta { flex: 1; }
+  .casecard-name { font-weight: 600; color: #fff; font-size: 14px; }
+  .casecard-ref { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+  .casecard-sanction { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--warn); font-weight: 500; }
+  .casecard-body { padding: 18px 20px; display: none; }
+  .casecard-body.open { display: block; }
+  .casecard-body p { margin-bottom: 8px; color: var(--text2); font-size: 14px; }
+  .casecard-body strong { color: var(--text); }
+
+  /* OVERVIEW GRID */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .topic-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-tile::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .topic-tile:hover { border-color: rgba(79,127,255,.4); transform: translateY(-2px); }
+  .topic-tile:hover::before { opacity: 1; }
+  .topic-tile.t1::before { background: var(--accent); }
+  .topic-tile.t2::before { background: var(--accent2); }
+  .topic-tile.t3::before { background: var(--accent3); }
+  .topic-tile.t4::before { background: var(--warn); }
+  .topic-tile.t5::before { background: var(--danger); }
+  .topic-tile.t6::before { background: #06b6d4; }
+  .topic-tile.t7::before { background: #ec4899; }
+  .topic-tile.t8::before { background: #8b5cf6; }
+  .topic-tile .tt-icon { font-size: 22px; margin-bottom: 10px; }
+  .topic-tile .tt-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .topic-tile .tt-sub { font-size: 12px; color: var(--text3); }
+  .topic-tile .tt-badge { font-family: 'DM Mono', monospace; font-size: 10px; margin-top: 10px; color: var(--text3); }
+
+  /* TAG PILLS */
+  .tag-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    background: rgba(79,127,255,.12);
+    color: var(--accent);
+    margin: 2px;
+  }
+  .tag-pill.green { background: rgba(16,185,129,.12); color: var(--accent3); }
+  .tag-pill.orange { background: rgba(245,158,11,.12); color: var(--warn); }
+  .tag-pill.purple { background: rgba(124,58,237,.12); color: #a78bfa; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  /* HOME HERO */
+  .hero {
+    background: linear-gradient(135deg, rgba(79,127,255,.08), rgba(124,58,237,.08));
+    border: 1px solid rgba(79,127,255,.2);
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: 'ETH';
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 140px;
+    font-weight: 800;
+    color: rgba(79,127,255,.04);
+    pointer-events: none;
+    line-height: 1;
+  }
+  .hero h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .hero p { color: var(--text2); font-size: 14px; max-width: 500px; }
+  .hero .hero-stats { display: flex; gap: 28px; margin-top: 20px; }
+  .hero .stat { }
+  .hero .stat-n { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--accent); }
+  .hero .stat-l { font-size: 12px; color: var(--text3); }
+
+  /* ACCORDION */
+  .acc-item { border-bottom: 1px solid var(--border); }
+  .acc-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; cursor: pointer; color: #fff; font-size: 14.5px; font-weight: 500;
+  }
+  .acc-head:hover { color: var(--accent); }
+  .acc-arrow { transition: transform .25s; color: var(--text3); }
+  .acc-body { display: none; padding-bottom: 14px; color: var(--text2); font-size: 14px; line-height: 1.7; }
+  .acc-body.open { display: block; }
+
+  /* GLOSSAR */
+  .glossar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .gitem {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .gitem .abbr { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 500; margin-bottom: 3px; }
+  .gitem .full { font-size: 12.5px; color: var(--text2); }
+
+  /* SCORE */
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(16,185,129,.12);
+    border: 1px solid rgba(16,185,129,.2);
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+    margin-bottom: 24px;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width: 720px) {
+    .sidebar { width: 200px; }
+    .main { padding: 24px 20px; }
+    .topic-grid { grid-template-columns: 1fr; }
+    .behoerden { grid-template-columns: 1fr; }
+    .glossar-grid { grid-template-columns: 1fr; }
+  }
+  @media(max-width: 560px) {
+    .shell { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; }
+    .sidebar-nav { display: none; }
+  }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="tag">ETH Zürich · FS2026</div>
+    <h1>Telekommunikations&shy;recht</h1>
+  </div>
+  <div class="sidebar-progress">
+    <div class="progress-label">Fortschritt</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-count" id="progressCount">0 / 8 Themen erkundet</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-group-label">Navigation</div>
+    <div class="nav-item active" data-view="home" onclick="showView('home')">
+      <span class="num">🏠</span> Übersicht
+    </div>
+    <div class="nav-group-label">Theorie</div>
+    <div class="nav-item" data-view="grundlagen" onclick="showView('grundlagen')">
+      <span class="num">A</span> Juristische Grundlagen
+    </div>
+    <div class="nav-item" data-view="geschichte" onclick="showView('geschichte')">
+      <span class="num">B</span> Geschichte & FMG
+    </div>
+    <div class="nav-item" data-view="netzzugang" onclick="showView('netzzugang')">
+      <span class="num">C</span> Netzzugang (Art. 11)
+    </div>
+    <div class="nav-item" data-view="grundversorgung" onclick="showView('grundversorgung')">
+      <span class="num">D</span> Grundversorgung
+    </div>
+    <div class="nav-item" data-view="wettbewerb" onclick="showView('wettbewerb')">
+      <span class="num">E</span> Wettbewerbsrecht
+    </div>
+    <div class="nav-item" data-view="vertrag" onclick="showView('vertrag')">
+      <span class="num">F</span> Telefonvertrag & Fälle
+    </div>
+    <div class="nav-item" data-view="strahlung" onclick="showView('strahlung')">
+      <span class="num">G</span> Mobilfunkstrahlung
+    </div>
+    <div class="nav-item" data-view="rechtsvergleich" onclick="showView('rechtsvergleich')">
+      <span class="num">H</span> Rechtsvergleichung
+    </div>
+    <div class="nav-group-label">Prüfungsvorbereitung</div>
+    <div class="nav-item" data-view="flashcards" onclick="showView('flashcards')">
+      <span class="num">💡</span> Flashcards
+    </div>
+    <div class="nav-item" data-view="quiz" onclick="showView('quiz')">
+      <span class="num">✏️</span> Quiz
+    </div>
+    <div class="nav-item" data-view="spickzettel" onclick="showView('spickzettel')">
+      <span class="num">📋</span> Spickzettel
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- HOME -->
+<div class="view active" id="view-home">
+  <div class="section-eyebrow">Willkommen</div>
+  <div class="section-title">Lernapp Telekommunikationsrecht</div>
+  <div class="section-subtitle">Alle Inhalte der Vorlesung von Dr. Clemens von Zedtwitz – kompakt, verständlich, prüfungsbereit.</div>
+
+  <div class="hero">
+    <h2>Prüfung am Donnerstag – du schaffst das! 💪</h2>
+    <p>Diese App basiert direkt auf deinen Folien und den Notizen deines Freundes. Kein Vorwissen nötig – alle Begriffe werden erklärt.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">11</div><div class="stat-l">Themen</div></div>
+      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Leitfälle</div></div>
+      <div class="stat"><div class="stat-n">40+</div><div class="stat-l">Flashcards</div></div>
+      <div class="stat"><div class="stat-n">20</div><div class="stat-l">Quizfragen</div></div>
+    </div>
+  </div>
+
+  <div class="hbox blue">
+    <strong>Lernziel des Kurses:</strong> Juristische Grundkonzepte des Schweizer Rechts <em>am Beispiel</em> des Telekommunikationsrechts verstehen. Es geht nicht nur um Telekom, sondern darum, juristisches Denken zu demonstrieren – mit öffentlichem Recht, Privatrecht, Wettbewerbs- und Umweltrecht.
+  </div>
+
+  <div class="divider"></div>
+  <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:16px;">Alle Themen im Überblick</div>
+
+  <div class="topic-grid">
+    <div class="topic-tile t1" onclick="showView('grundlagen')">
+      <div class="tt-icon">⚖️</div>
+      <div class="tt-title">Juristische Grundlagen</div>
+      <div class="tt-sub">Öff. Recht vs. Privatrecht, Normenhierarchie, Vertragsschluss</div>
+      <div class="tt-badge">TEIL A</div>
+    </div>
+    <div class="topic-tile t2" onclick="showView('geschichte')">
+      <div class="tt-icon">📜</div>
+      <div class="tt-title">Geschichte & FMG-Zweck</div>
+      <div class="tt-sub">Vom PTT-Monopol zur Liberalisierung (1922–2021)</div>
+      <div class="tt-badge">TEIL B–C</div>
+    </div>
+    <div class="topic-tile t3" onclick="showView('netzzugang')">
+      <div class="tt-icon">🔌</div>
+      <div class="tt-title">Netzzugang Art. 11 FMG</div>
+      <div class="tt-sub">Essential facility, 6 Zugangsformen, LRIC, Behörden</div>
+      <div class="tt-badge">TEIL D</div>
+    </div>
+    <div class="topic-tile t4" onclick="showView('grundversorgung')">
+      <div class="tt-icon">📡</div>
+      <div class="tt-title">Grundversorgung</div>
+      <div class="tt-sub">Service public, Art. 14+16 FMG, Konzession Swisscom</div>
+      <div class="tt-badge">TEIL E</div>
+    </div>
+    <div class="topic-tile t5" onclick="showView('wettbewerb')">
+      <div class="tt-icon">🏛️</div>
+      <div class="tt-title">Wettbewerbsrecht</div>
+      <div class="tt-sub">KG, UWG, Art. 5+7 KG, drei Praxisfälle mit CHF-Sanktionen</div>
+      <div class="tt-badge">TEIL F–G</div>
+    </div>
+    <div class="topic-tile t6" onclick="showView('vertrag')">
+      <div class="tt-icon">📄</div>
+      <div class="tt-title">Telefonvertrag & Fälle</div>
+      <div class="tt-sub">Innominatvertrag, BGE 129 III 604 (Télékiosque)</div>
+      <div class="tt-badge">TEIL H</div>
+    </div>
+    <div class="topic-tile t7" onclick="showView('strahlung')">
+      <div class="tt-icon">📶</div>
+      <div class="tt-title">Mobilfunkstrahlung</div>
+      <div class="tt-sub">NISV, Immissions- vs. Anlagegrenzwerte, BGE 128 II 168</div>
+      <div class="tt-badge">TEIL I</div>
+    </div>
+    <div class="topic-tile t8" onclick="showView('rechtsvergleich')">
+      <div class="tt-icon">🌍</div>
+      <div class="tt-title">Rechtsvergleichung</div>
+      <div class="tt-sub">Civil Law vs. Common Law, Punitive Damages, ombudscom</div>
+      <div class="tt-badge">TEIL J</div>
+    </div>
+  </div>
+
+  <div class="hbox orange">
+    <strong>Tipp für Donnerstag:</strong> Fokussiere auf die <strong>4 Leitfälle</strong>, die <strong>6 Zugangsformen (Art. 11 FMG)</strong>, die <strong>4 Begriffspaare</strong> und die <strong>Normenhierarchie</strong>. Das sind erfahrungsgemäss die häufigsten Prüfungsthemen.
+  </div>
+</div>
+
+<!-- GRUNDLAGEN -->
+<div class="view" id="view-grundlagen">
+  <div class="section-eyebrow">Teil A</div>
+  <div class="section-title">Juristische Grundlagen</div>
+  <div class="section-subtitle">Das Fundament des Kurses – fast jede Prüfungsfrage lässt sich einer dieser Kategorien zuordnen.</div>
+
+  <div class="card">
+    <div class="card-title">⚖️ Die zwei grossen Hälften des Rechts <span class="badge">KERN</span></div>
+    <table class="tbl">
+      <thead><tr><th>Typ</th><th>Was wird geregelt?</th><th>Instrument</th><th>Beispiele im Kurs</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Öffentliches Recht</strong></td>
+          <td>Verhältnis <strong>Staat ↔ Bürger</strong> (Über-/Unterordnung)</td>
+          <td><strong>Verfügung</strong> (einseitiger Behördenentscheid)</td>
+          <td>FMG, USG, NISV, FDV</td>
+        </tr>
+        <tr>
+          <td><strong>Privatrecht</strong></td>
+          <td>Verhältnis <strong>Bürger ↔ Bürger</strong> (Gleichordnung)</td>
+          <td><strong>Vertrag</strong></td>
+          <td>ZGB, OR, Telefonabonnement</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="hbox blue">
+      <strong>Merksatz öff. Recht:</strong> Jedes staatliche Handeln braucht:<br>
+      1. <strong>Gesetzliche Grundlage</strong> · 2. <strong>Öffentliches Interesse</strong> · 3. <strong>Verhältnismässigkeit</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📐 Normenhierarchie <span class="badge">PRÜFUNG</span></div>
+    <p>Höheres Recht bricht niedrigeres:</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin:14px 0;">
+      <div style="background:rgba(79,127,255,.15);border-radius:8px;padding:10px 16px;border-left:3px solid var(--accent);">
+        <strong style="color:#fff;">1. Bundesverfassung (BV)</strong> <span style="color:var(--text3);font-size:12px;">— oberste Stufe, 18.4.1999</span>
+      </div>
+      <div style="background:rgba(124,58,237,.1);border-radius:8px;padding:10px 16px;border-left:3px solid var(--accent2);">
+        <strong style="color:#fff;">2. Gesetze</strong> <span style="color:var(--text3);font-size:12px;">— FMG, USG, ZGB, OR (vom Parlament)</span>
+      </div>
+      <div style="background:rgba(16,185,129,.08);border-radius:8px;padding:10px 16px;border-left:3px solid var(--accent3);">
+        <strong style="color:#fff;">3. Verordnungen</strong> <span style="color:var(--text3);font-size:12px;">— FDV, NISV (vom Bundesrat, konkretisieren das Gesetz)</span>
+      </div>
+    </div>
+    <div class="hbox green">
+      <strong>Prüfungslogik:</strong> Das FMG gibt den Rahmen → die FDV füllt die Details aus. Dieses Muster „Gesetz + Verordnung" ist ein <em>wiederkehrendes Muster</em> im ganzen Kurs!
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 Entstehungsgründe einer Obligation <span class="badge">LISTE</span></div>
+    <p>Eine <strong>Obligation</strong> = Rechtsverhältnis, bei dem ein <em>Schuldner</em> dem <em>Gläubiger</em> eine <em>Leistung</em> schuldet.</p>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>#</th><th>Entstehungsgrund</th><th>Artikel</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td><strong>Vertrag</strong> ← wichtigster für diesen Kurs</td><td>Art. 1 ff. OR</td></tr>
+        <tr><td>2</td><td>Unerlaubte Handlung (jemandem Schaden zufügen)</td><td>Art. 41 ff. OR</td></tr>
+        <tr><td>3</td><td>Ungerechtfertigte Bereicherung</td><td>Art. 62 ff. OR</td></tr>
+        <tr><td>4</td><td>Geschäftsführung ohne Auftrag</td><td>Art. 419 ff. OR</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🤝 Vertragsschluss (Art. 1 OR)</div>
+    <p>Vertrag = <strong>Antrag</strong> + <strong>Annahme</strong>, wenn sich beide über die wesentlichen Punkte einig sind (Konsens). Kann ausdrücklich oder stillschweigend sein.</p>
+    <div class="hbox orange">
+      <strong>Stillschweigen als Annahme?</strong> Nein! Schweigen = <strong>Ablehnung</strong>. Ausnahme: bei besonderer Natur des Geschäfts oder nach den Umständen.
+    </div>
+    <p style="margin-top:10px;"><strong>Gültigkeitsvoraussetzungen:</strong> Handlungsfähigkeit · keine Unmöglichkeit · Inhaltsfreiheit · Formvorschriften · kein Willensmangel (Irrtum, Täuschung, Drohung)</p>
+  </div>
+</div>
+
+<!-- GESCHICHTE -->
+<div class="view" id="view-geschichte">
+  <div class="section-eyebrow">Teil B–C</div>
+  <div class="section-title">Fernmelderecht & Geschichte</div>
+  <div class="section-subtitle">Vom staatlichen Monopol zur Liberalisierung – ein klassisches Zeitstrahl-Thema an der Prüfung.</div>
+
+  <div class="card">
+    <div class="card-title">🎯 Zweck des FMG (Art. 1 FMG) <span class="badge">PRÜFUNG</span></div>
+    <p>Das FMG bezweckt <strong>vielfältige, preiswerte, qualitativ hochstehende, national und international konkurrenzfähige Fernmeldedienste</strong>. Konkret:</p>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>lit.</th><th>Ziel</th></tr></thead>
+      <tbody>
+        <tr><td>a</td><td>Zuverlässige, erschwingliche <strong>Grundversorgung</strong> in allen Landesteilen</td></tr>
+        <tr><td>b</td><td>Störungsfreier, Persönlichkeitsrechte achtender Fernmeldeverkehr</td></tr>
+        <tr><td>c</td><td><strong>Wirksamer Wettbewerb</strong></td></tr>
+        <tr><td>d</td><td>Schutz vor unlauterer Werbung und Missbrauch bei Mehrwertdiensten</td></tr>
+        <tr><td>e</td><td>Schutz von Kindern und Jugendlichen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📅 Zeitstrahl: Vom Monopol zum Wettbewerb <span class="badge">PRÜFUNG</span></div>
+    <div class="timeline" style="margin-top:14px;">
+      <div class="tl-item">
+        <div class="tl-year">1922</div>
+        <div class="tl-title">Telegrafen- und Telefonverkehrsgesetz</div>
+        <div class="tl-desc"><strong>Umfassendes PTT-Monopol:</strong> Der Staat kontrolliert alles – Dienste (Telegramm, Telefon, Telex, Fax), Netze, Apparate. PTT = Post, Telefon, Telegraf.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1991</div>
+        <div class="tl-title">Fernmeldegesetz</div>
+        <div class="tl-desc"><strong>Eingeschränktes PTT-Monopol:</strong> Monopol bleibt bei leitungsgebundenen Netzen + Telefon, aber Wettbewerb bei Teilnehmeranlagen und Datenübertragung. Schaffung <strong>BAKOM</strong>.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1997</div>
+        <div class="tl-title">Fernmeldegesetz – Marktöffnung I</div>
+        <div class="tl-desc"><strong>Aufhebung</strong> des Netz- und Telefoniemonopols. Swisscom wird spezialgesetzliche AG. Interkonnektionsregime eingeführt. Schaffung <strong>ComCom</strong>.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2006 / 2007</div>
+        <div class="tl-title">Fernmeldegesetz – Netzzugang</div>
+        <div class="tl-desc"><strong>Erweitertes Netzzugangsregime (Art. 11 FMG):</strong> Lösung der „Stolpersteine auf der letzten Meile" (= Anschluss bis ins Haus).</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2019 / 2021</div>
+        <div class="tl-title">Aktuelles FMG (in Kraft 1.1.2021)</div>
+        <div class="tl-desc">Ausweitung des entbündelten Zugangs über Kupferleitungen hinaus – wegen Glasfaserausbau.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📖 Zentrale Legaldefinition: Interkonnektion (Art. 3 lit. e FMG)</div>
+    <p>Herstellung des Zugangs durch die <strong>Verbindung der Anlagen und Dienste zweier Anbieterinnen</strong> von Fernmeldediensten, damit ein fernmeldetechnisches und logisches Zusammenwirken sowie der Zugang zu Diensten Dritter ermöglicht wird.</p>
+    <div class="hbox blue">
+      <strong>Einfach erklärt:</strong> Damit ein Swisscom-Kunde jemanden bei Salt anrufen kann, müssen die Netze verbunden sein. Das ist Interkonnektion.
+    </div>
+  </div>
+</div>
+
+<!-- NETZZUGANG -->
+<div class="view" id="view-netzzugang">
+  <div class="section-eyebrow">Teil D</div>
+  <div class="section-title">Netzzugang (Art. 11 FMG)</div>
+  <div class="section-subtitle">Das Herzstück des regulatorischen Rahmens – die 6 Zugangsformen sind prüfungsrelevant.</div>
+
+  <div class="card">
+    <div class="card-title">🏭 Essential Facility Doktrin <span class="badge">KONZEPT</span></div>
+    <p>Eine <strong>essential facility</strong> (wesentliche Einrichtung) = ein nicht allen Wettbewerbern verfügbarer Teil der Wertschöpfungskette, auf dem alle Produkte aufbauen.</p>
+    <div class="hbox blue">
+      <strong>Im Telekom-Kontext:</strong> Das <strong>Anschlussnetz bis ins Haus („letzte Meile")</strong> gehörte historisch Swisscom. Ein Konkurrent müsste ein eigenes Netz zu jedem Haus bauen – unwirtschaftlich! → Lösung: Inhaber wird <strong>gezwungen</strong>, Zugang zu gewähren.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Art. 11 FMG – Die 6 Zugangsformen <span class="badge orange">PRÜFUNG</span></div>
+    <p><strong>Voraussetzung:</strong> Nur marktbeherrschende Anbieter müssen Zugang gewähren (transparent, nicht diskriminierend, zu kostenorientierten Preisen).</p>
+    <table class="tbl" style="margin-top:12px;">
+      <thead><tr><th>lit.</th><th>Zugangsform</th><th>Erklärung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>a</strong></td><td>Vollständig entbündelter Zugang zum Teilnehmeranschluss</td><td>Konkurrent mietet die nackte Kupferleitung bis zum Kunden</td></tr>
+        <tr><td><strong>b</strong></td><td>Schneller Bitstromzugang <em>(befristet 4 Jahre)</em></td><td>Zugang zu schnellem Breitband-Datenstrom</td></tr>
+        <tr><td><strong>c</strong></td><td>Verrechnung von Teilnehmeranschlüssen des Festnetzes</td><td></td></tr>
+        <tr><td><strong>d</strong></td><td>Interkonnektion</td><td>Zusammenschaltung der Netze (→ Art. 3 lit. e FMG)</td></tr>
+        <tr><td><strong>e</strong></td><td>Mietleitungen</td><td>Anmieten fester Übertragungswege</td></tr>
+        <tr><td><strong>f</strong></td><td>Zugang zu Kabelkanalisationen</td><td>Mitnutzung der Leerrohre im Boden</td></tr>
+      </tbody>
+    </table>
+    <div class="hbox orange">
+      <strong>Achtung Tatbestand:</strong> Die Pflicht trifft <em>nur marktbeherrschende Anbieter</em>. Ob jemand marktbeherrschend ist, beurteilt die <strong>WEKO</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 Kostenorientierte Preise – LRIC (Art. 54 FDV)</div>
+    <p><strong>LRIC</strong> = <em>Long Run Incremental Cost</em>. Die Zugangspreise sollen so simuliert werden, wie sie bei <strong>funktionierendem Wettbewerb</strong> zustande kämen – nicht überhöht durch Marktmacht.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ Verfahren: Verhandlungsprimat (Art. 11a FMG)</div>
+    <div class="hbox blue">
+      <strong>Verhandlungsprimat</strong> = zuerst müssen die Parteien <em>selbst</em> verhandeln; der Staat greift erst danach ein.
+    </div>
+    <p style="margin-top:10px;"><strong>Ablauf:</strong></p>
+    <ol style="margin:10px 0 0 20px;color:var(--text2);font-size:14px;line-height:2;">
+      <li>Anbieter verhandeln über Zugangsbedingungen.</li>
+      <li>Einigung scheitert → nach <strong>3 Monaten</strong> kann eine Partei bei der <strong>ComCom</strong> ein Gesuch stellen (auf Antrag BAKOM).</li>
+      <li>ComCom verfügt die Bedingungen; kann einstweiligen Rechtsschutz gewähren.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏛️ Die 4 Behörden – wer macht was? <span class="badge">PRÜFUNG</span></div>
+    <div class="behoerden">
+      <div class="bcard">
+        <div class="name">BAKOM</div>
+        <div class="role">Bundesamt für Kommunikation. <strong>Instruiert</strong> (bereitet vor), stellt Antrag. Verwaltungsstelle.</div>
+      </div>
+      <div class="bcard">
+        <div class="name">ComCom</div>
+        <div class="role">Eidg. Kommunikationskommission. <strong>Erlässt die Verfügung</strong> (entscheidet im Streit). Unabhängig.</div>
+      </div>
+      <div class="bcard">
+        <div class="name">WEKO</div>
+        <div class="role">Wettbewerbskommission. Beurteilt die <strong>Marktstellung</strong> (marktbeherrschend?) im Konsultationsverfahren.</div>
+      </div>
+      <div class="bcard">
+        <div class="name">BVerwGer</div>
+        <div class="role">Bundesverwaltungsgericht. <strong>Beschwerdeinstanz</strong> gegen Verfügungen (Art. 33 lit. f VGG).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GRUNDVERSORGUNG -->
+<div class="view" id="view-grundversorgung">
+  <div class="section-eyebrow">Teil E</div>
+  <div class="section-title">Grundversorgung / Service Public</div>
+  <div class="section-subtitle">Wie der Staat sicherstellt, dass alle – auch in abgelegenen Regionen – Zugang zu Telekommunikation haben.</div>
+
+  <div class="card">
+    <div class="card-title">💡 Idee und Funktion</div>
+    <p>In einem reinen Wettbewerbsmarkt werden gewisse Dienste <strong>nicht für alle</strong> bereitgestellt (z. B. abgelegene Bergregionen sind unrentabel). Die Grundversorgung dient als <strong>Sicherheitsnetz</strong>, das ein Basisangebot für alle garantiert.</p>
+    <p style="margin-top:8px;">Synonyme: <span class="tag-pill">service public</span> <span class="tag-pill">universal service</span> <span class="tag-pill green">Grundversorgung</span></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📜 Rechtliche Umsetzung <span class="badge">ARTIKEL</span></div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        Art. 14 FMG – Die Konzession
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        Einer oder mehreren Anbieterinnen wird periodisch eine <strong>Grundversorgungskonzession</strong> erteilt. Eine <strong>Konzession</strong> = staatliche Erlaubnis/Verpflichtung. Auflage: im Konzessionsgebiet <em>allen Bevölkerungskreisen</em> die Dienste anbieten. Ausschreibung nach: <strong>Objektivität, Nichtdiskriminierung, Transparenz</strong>.
+      </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        Art. 16 FMG – Umfang der Grundversorgung
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        U. a. <strong>öffentlicher Telefondienst</strong> (Sprachübertragung in Echtzeit + Datenübertragung im Sprachband), <strong>Zugang zu Notrufdiensten</strong>, ausreichende Versorgung mit <strong>öffentlichen Sprechstellen</strong>. Der <strong>Bundesrat</strong> bestimmt die Einzelheiten und passt den Inhalt periodisch dem Stand der Technik an.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🇨🇭 Praxis in der Schweiz</div>
+    <p>Faktisch hat sich immer nur <strong>Swisscom</strong> beworben und die Konzession erhalten. Die <strong>ComCom</strong> erteilte die Konzession zuletzt für <strong>2024 bis Ende 2031</strong>.</p>
+  </div>
+
+  <div class="hbox blue">
+    <strong>Merksatz FMG vs. KG:</strong><br>
+    <strong>FMG</strong> = sektorspezifisch, Marktöffnung, ex ante (vorausschauend)<br>
+    <strong>KG</strong> = allgemein (alle Branchen), Missbrauch sanktionieren, ex post (nachträglich)<br>
+    → <strong>Parallele Anwendbarkeit:</strong> beide können nebeneinander gelten!
+  </div>
+</div>
+
+<!-- WETTBEWERB -->
+<div class="view" id="view-wettbewerb">
+  <div class="section-eyebrow">Teil F–G</div>
+  <div class="section-title">Wettbewerbsrecht</div>
+  <div class="section-subtitle">KG und UWG – die rechtlichen Schranken für Unternehmen mit Marktmacht.</div>
+
+  <div class="card">
+    <div class="card-title">📚 Zwei Gesetze</div>
+    <table class="tbl">
+      <thead><tr><th>Gesetz</th><th>Schützt</th><th>Gegen</th></tr></thead>
+      <tbody>
+        <tr><td><strong>KG</strong> – Kartellgesetz (1995)</td><td>Wettbewerb als Institution</td><td>Kartelle, Marktmachtmissbrauch</td></tr>
+        <tr><td><strong>UWG</strong> – Gesetz geg. unlauteren Wettbewerb</td><td>Fairen Wettbewerb, Konsumenten</td><td>Unlautere Praktiken, missbräuchliche AGB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏗️ Die 3 Pfeiler des Kartellrechts (KG) <span class="badge orange">PRÜFUNG</span></div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        1. Unzulässige Wettbewerbsabreden (Art. 5 KG)
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        Absprachen zwischen Unternehmen.<br>
+        <strong>Horizontal</strong> = zwischen Konkurrenten auf gleicher Stufe (z. B. Preisabsprache zweier Mobilfunkanbieter)<br>
+        <strong>Vertikal</strong> = zwischen verschiedenen Stufen (z. B. Hersteller ↔ Händler)
+      </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        2. Missbrauch marktbeherrschender Stellung (Art. 7 KG)
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        Ein marktbeherrschendes Unternehmen handelt unzulässig, wenn es durch Missbrauch andere Unternehmen behindert.<br><br>
+        <strong>Art. 7 Abs. 2 lit. a:</strong> Verweigerung von Geschäftsbeziehungen (Liefer-/Bezugssperre)<br>
+        <strong>Art. 7 Abs. 2 lit. b:</strong> Diskriminierung von Handelspartnern bei Preisen/Bedingungen<br>
+        <strong>Art. 7 Abs. 2 lit. c:</strong> Erzwingung unangemessener Preise<br>
+        <strong>Art. 7 Abs. 2 lit. d:</strong> Gezielte Preisunterbietung (Verdrängung)
+      </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        3. Unternehmenszusammenschlüsse (Art. 9 + 10 KG)
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        Meldepflicht bei Zusammenschlüssen (Art. 9 KG). Beurteilung durch WEKO (Art. 10 KG).
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ Durchsetzung: Zwei Wege</div>
+    <table class="tbl">
+      <thead><tr><th>Weg</th><th>Artikel</th><th>Was gibt's?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Zivilrechtlich</strong></td><td>Art. 12 ff. KG</td><td>Beseitigung/Unterlassung, Schadenersatz (OR), Gewinnherausgabe</td></tr>
+        <tr><td><strong>Verwaltungsrechtlich</strong></td><td>Art. 18 ff. KG</td><td>Verwaltungs- und Strafsanktionen (durch WEKO)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 AGB-Schutz (Art. 8 UWG)</div>
+    <p>Unlauter handelt, wer AGB verwendet, die in <strong>Treu und Glauben verletzender Weise</strong> zum Nachteil der Konsumenten ein <strong>erhebliches und ungerechtfertigtes Missverhältnis</strong> zwischen vertraglichen Rechten und Pflichten vorsehen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Die 3 Praxisfälle <span class="badge orange">SEHR PRÜFUNGSRELEVANT</span></div>
+
+    <div class="casecard">
+      <div class="casecard-head" onclick="toggleCase(this)">
+        <div class="casecard-icon">📱</div>
+        <div class="casecard-meta">
+          <div class="casecard-name">Mobilfunkterminierung</div>
+          <div class="casecard-ref">BGE 137 II 199 · BGer 11.4.2011</div>
+        </div>
+        <div class="casecard-sanction">CHF 333'365'685</div>
+      </div>
+      <div class="casecard-body">
+        <p><strong>Was ist Terminierung?</strong> Die Gebühr, die ein Netz verlangt, damit ein Anruf aus einem <em>fremden</em> Netz bei seinem Kunden <em>ankommt</em>.</p>
+        <p><strong>Ergebnis:</strong> WEKO stellte fest: Swisscom Mobile war <strong>marktbeherrschend</strong> und missbrauchte ihre Stellung nach <strong>Art. 7 Abs. 2 lit. c KG</strong> durch <strong>unangemessen hohe Terminierungsgebühren</strong>.</p>
+        <p><strong>Sanktion: CHF 333'365'685.–</strong> (vom Bundesgericht bestätigt)</p>
+      </div>
+    </div>
+
+    <div class="casecard">
+      <div class="casecard-head" onclick="toggleCase(this)">
+        <div class="casecard-icon">💻</div>
+        <div class="casecard-meta">
+          <div class="casecard-name">ADSL II</div>
+          <div class="casecard-ref">WEKO-Entscheid 19.10.2009</div>
+        </div>
+        <div class="casecard-sanction">CHF 219'861'720</div>
+      </div>
+      <div class="casecard-body">
+        <p><strong>Was passierte?</strong> Swisscom überkompensierte Verluste im Endkundengeschäft (Bluewin) durch Gewinne bei der notwendigen Vorleistung.</p>
+        <p>Stichwort: <strong>Kosten-Preis-Schere</strong> (margin squeeze) – der Konkurrent kann nicht profitabel anbieten, weil der integrierte Anbieter die Margen drückt.</p>
+        <p><strong>Sanktion: CHF 219'861'720.–</strong></p>
+      </div>
+    </div>
+
+    <div class="casecard">
+      <div class="casecard-head" onclick="toggleCase(this)">
+        <div class="casecard-icon">🌐</div>
+        <div class="casecard-meta">
+          <div class="casecard-name">Office Connex / BBCS</div>
+          <div class="casecard-ref">Klage Sunrise vs. Swisscom · HGer ZH 17.5.2004</div>
+        </div>
+        <div class="casecard-sanction">Art. 7 KG</div>
+      </div>
+      <div class="casecard-body">
+        <p>Sunrise klagte: Swisscom biete Wholesale-Kunden nur Bandbreiten an, die kein vergleichbares Endkundenprodukt erlaubten.</p>
+        <p>Vorwurf: <strong>Art. 7 Abs. 2 lit. a KG</strong> (Verweigerung von Geschäftsbeziehungen) und <strong>lit. b KG</strong> (Diskriminierung).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERTRAG -->
+<div class="view" id="view-vertrag">
+  <div class="section-eyebrow">Teil H</div>
+  <div class="section-title">Telefonvertrag & Leitfall</div>
+  <div class="section-subtitle">Privatrecht zwischen Telekom-Unternehmen und Kunden – mit dem wichtigen BGE 129 III 604.</div>
+
+  <div class="card">
+    <div class="card-title">🏢 Privatrechtliche Natur</div>
+    <p>Das Verhältnis zwischen Telekom-Unternehmen und Kunde ist <strong>Privatrecht</strong> – auch bei Swisscom!</p>
+    <div class="hbox blue">
+      <strong>Art. 18 TUG:</strong> Die Rechtsbeziehungen zwischen Swisscom und Kunden richten sich nach <strong>Privatrecht</strong>.<br>
+      <strong>Art. 19 TUG:</strong> Streitigkeiten unterstehen der <strong>Zivilgerichtsbarkeit</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📄 Rechtsnatur des Festnetzvertrags <span class="badge">KONZEPT</span></div>
+    <p>Der Festnetzvertrag hat zwei Elemente: (1) Netzanschluss + (2) Erbringung von Fernmeldediensten.</p>
+    <div class="hbox purple">
+      <strong>Innominatvertrag</strong> = „unbenannter" Vertrag, im Gesetz nicht eigens geregelt. Gemischte Elemente aus:
+    </div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Vertragstyp</th><th>Artikel</th><th>Kern</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Werkvertrag</strong></td><td>Art. 363 OR</td><td>Herstellung eines Werks gegen Vergütung</td></tr>
+        <tr><td><strong>Mietvertrag</strong></td><td>Art. 253 ff. OR</td><td>Überlassung zum Gebrauch</td></tr>
+        <tr><td>Auftrag (zum Vergleich)</td><td>Art. 394 OR</td><td>Vertragsgemässes Besorgen eines Geschäfts</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px;color:var(--text2);font-size:14px;">Er ist ein <strong>Dauerschuldverhältnis</strong> (= auf wiederkehrende Leistung über Zeit angelegt, nicht einmalig).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Leitfall: BGE 129 III 604 – Télékiosque <span class="badge orange">SEHR PRÜFUNGSRELEVANT</span></div>
+
+    <div style="background:var(--bg3);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Sachverhalt</div>
+      <p style="color:var(--text2);font-size:14px;">A. schliesst am 16.2.1999 einen Telefonabonnementsvertrag mit Swisscom. Im Juni 1999 wird er gesperrt – aufgelaufener Betrag: <strong style="color:#fff;">CHF 15'955.95</strong>. Grund: 378 Anrufe, davon <strong>376 auf Mehrwertnummern</strong> „0906" und „156" (Télékiosque). A. bezahlt nicht; Swisscom klagt.</p>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Rechtliche Begründung</div>
+      <p style="color:var(--text2);font-size:14px;">• Die Treuepflicht beim Telefonvertrag ist <strong style="color:#fff;">nicht</strong> mit jener des Werkvertrags vergleichbar.<br>
+      • Swisscom kann nicht beurteilen, welche Beträge ein Kunde „vernünftigerweise" ausgeben soll.<br>
+      • Aus dem Vertrag folgt <strong style="color:#fff;">keine Nebenpflicht zur Überwachung</strong> des Nutzungsverhaltens (bzgl. finanzieller Interessen).<br>
+      • Auch das Fernmelderecht begründet keine solche Pflicht.</p>
+    </div>
+
+    <div class="hbox green">
+      <strong>Ergebnis:</strong> A. muss den vollen Betrag von <strong>CHF 15'955.95</strong> bezahlen.
+    </div>
+    <div class="hbox blue" style="margin-top:10px;">
+      <strong>Lehre:</strong> Keine generelle Warn- oder Überwachungspflicht des Anbieters. Der Kunde trägt das Risiko seines eigenen Nutzungsverhaltens. Zeigt auch: Festnetzvertrag = Innominatvertrag, kein reiner Werkvertrag.
+    </div>
+  </div>
+</div>
+
+<!-- STRAHLUNG -->
+<div class="view" id="view-strahlung">
+  <div class="section-eyebrow">Teil I</div>
+  <div class="section-title">Mobilfunkstrahlung & NISV</div>
+  <div class="section-subtitle">Umweltrecht und Technik – mit der wichtigen Unterscheidung der zwei Grenzwerttypen.</div>
+
+  <div class="card">
+    <div class="card-title">⚡ Normenkette (Rechtliche Verankerung)</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0;">
+      <span style="background:rgba(79,127,255,.15);padding:8px 14px;border-radius:8px;color:#fff;font-size:13px;">Art. 74 Abs. 1 BV<br><span style="color:var(--text3);font-size:11px;">Umweltschutz-Kompetenz</span></span>
+      <span style="color:var(--text3);">→</span>
+      <span style="background:rgba(124,58,237,.1);padding:8px 14px;border-radius:8px;color:#fff;font-size:13px;">Art. 1 + 13 USG<br><span style="color:var(--text3);font-size:11px;">Umweltschutzgesetz</span></span>
+      <span style="color:var(--text3);">→</span>
+      <span style="background:rgba(16,185,129,.1);padding:8px 14px;border-radius:8px;color:#fff;font-size:13px;">NISV<br><span style="color:var(--text3);font-size:11px;">seit 1.2.2000</span></span>
+    </div>
+    <div class="hbox orange">
+      <strong>Wichtig:</strong> Die NISV ist eine <strong>abschliessende bundesrechtliche Regelung</strong> – für kantonale Regelungen besteht <em>kein Raum</em>! Kantone/Gemeinden dürfen keine eigenen Strahlungsgrenzwerte setzen.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Die zwei Grenzwert-Typen <span class="badge orange">KERN-UNTERSCHEIDUNG</span></div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Kriterium</th>
+          <th>Immissionsgrenzwerte</th>
+          <th>Anlagegrenzwerte</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Rechtsgrundlage</td>
+          <td>Art. 13 ff. NISV + Anhang 2</td>
+          <td>Art. 4 NISV + Anhang 1</td>
+        </tr>
+        <tr>
+          <td>Funktion</td>
+          <td><strong>Gefährdungsgrenzwert</strong> (Gesundheitsschutz)</td>
+          <td><strong>Vorsorgliche</strong> Emissionsbegrenzung</td>
+        </tr>
+        <tr>
+          <td>Wo gelten sie?</td>
+          <td><strong>Überall</strong> wo sich Menschen aufhalten</td>
+          <td>Nur an <strong>Orten mit empfindlicher Nutzung</strong> (Wohnräume, Büros, Schulen)</td>
+        </tr>
+        <tr>
+          <td>Bezug</td>
+          <td>Gesamtbelastung</td>
+          <td>Nur die <strong>einzelne Anlage</strong></td>
+        </tr>
+        <tr>
+          <td>Strenge</td>
+          <td>Weniger streng</td>
+          <td><strong>Erheblich strenger</strong> (Faktor 10!)</td>
+        </tr>
+        <tr>
+          <td>Werte (E-Feld)</td>
+          <td>~40 V/m (900 MHz), ~60 V/m (1800 MHz)</td>
+          <td><strong>4 V/m</strong> (900 MHz), <strong>6 V/m</strong> (1800 MHz), 5 V/m sonst</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="hbox blue" style="margin-top:12px;">
+      <strong>Merkhilfe:</strong> Immission = was beim Menschen <em>ankommt</em> (ICNIRP-Standard). Anlage = was die Antenne <em>aussendet</em> (Schweizer Vorsorge, viel strenger).
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏗️ Baurecht: Wo dürfen Antennen stehen?</div>
+    <p>Mobilfunkanlagen sind <strong>innerhalb von Bauzonen grundsätzlich zonenkonform</strong>.</p>
+    <p style="margin-top:8px;">Wenn gesetzliche Anforderungen (Strahlungsgrenzwerte) eingehalten sind → <strong>Rechtsanspruch auf Baubewilligung</strong>.</p>
+    <p style="margin-top:8px;">Kantone dürfen „Spezialzonen" schaffen, aber nur mit <strong>ortsplanerischer Begründung</strong> (nicht umweltrechtlicher) und ohne Verletzung fernmelderechtlicher öffentlicher Interessen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Leitfall: BGE 128 II 168 – Beschwerdelegitimation <span class="badge orange">PRÜFUNG</span></div>
+    <p><strong>Frage:</strong> Wer darf gegen eine geplante Antenne Einsprache erheben? (= Beschwerdelegitimation)</p>
+    <div class="hbox green" style="margin-top:12px;">
+      <strong>Bundesgericht:</strong> Der Kreis darf nicht zu eng gezogen werden, nicht von komplexen Berechnungen abhängen. Zugelassen sind Personen, bei denen die Strahlung in der <strong>Hauptstrahlrichtung</strong> <strong>mindestens 10% des Anlagegrenzwerts</strong> erreicht.
+    </div>
+    <p style="margin-top:10px;color:var(--text2);font-size:14px;"><strong>Lehre:</strong> Praktikable <strong>10%-Faustregel</strong> für die Beschwerdeberechtigung rund um eine Antenne.</p>
+  </div>
+</div>
+
+<!-- RECHTSVERGLEICH -->
+<div class="view" id="view-rechtsvergleich">
+  <div class="section-eyebrow">Teil J</div>
+  <div class="section-title">Rechtsvergleichung & Durchsetzung</div>
+  <div class="section-subtitle">Civil Law vs. Common Law, Punitive Damages und ombudscom.</div>
+
+  <div class="card">
+    <div class="card-title">🌍 Civil Law vs. Common Law <span class="badge">PRÜFUNG</span></div>
+    <table class="tbl">
+      <thead><tr><th>Kriterium</th><th>Civil Law</th><th>Common Law</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Länder</td>
+          <td>Schweiz, Deutschland, Frankreich…</td>
+          <td>England, USA, Kanada…</td>
+        </tr>
+        <tr>
+          <td>Ursprung</td>
+          <td>Römisches Recht → Kodifikationen 19. Jh.</td>
+          <td>Ab 1066 (Normannen), Royal Courts</td>
+        </tr>
+        <tr>
+          <td>Methode</td>
+          <td><strong>Deduktiv</strong> (vom Gesetz zum Fall)</td>
+          <td><strong>Induktiv</strong> (vom Fall zur Regel)</td>
+        </tr>
+        <tr>
+          <td>Primärquellen</td>
+          <td>Verfassung, <strong>Gesetze</strong>, Verordnungen</td>
+          <td>Verfassung, <strong>„Case Law"</strong>, Gesetzgebung</td>
+        </tr>
+        <tr>
+          <td>Gerichte</td>
+          <td>Viele spezialisierte Gerichte</td>
+          <td>Eher einheitliches System</td>
+        </tr>
+        <tr>
+          <td>Hohe Ansicht</td>
+          <td><strong>Professoren</strong></td>
+          <td><strong>Richter</strong></td>
+        </tr>
+        <tr>
+          <td>Ausbildung</td>
+          <td>Zweistufig (akademisch + praktisch)</td>
+          <td>Einstufig; zweiter Abschluss</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💥 Punitive Damages (USA)</div>
+    <p><strong>Strafschadenersatz</strong>, der über den effektiven Schaden <em>hinausgeht</em> und besondere Verwerflichkeit voraussetzt. Im Schweizer Recht nicht vorgesehen.</p>
+    <p style="margin-top:8px;"><strong>Zweck:</strong> Abschreckung · Gewinnabschöpfung · Genugtuung · Entschädigung Rechtsverfolgungskosten</p>
+    <p style="margin-top:8px;"><strong>Höhe:</strong> Freies Jury-Ermessen. Je grösser der Konzern, desto höher.</p>
+    <div class="hbox orange" style="margin-top:12px;">
+      <strong>Bekannte Fälle:</strong><br>
+      General Motors (gefährliche Tankplatzierung): $108 Mio. Schadenersatz + <strong>$4,8 Mia.</strong> Punitive Damages.<br>
+      McDonald's (heisser Kaffee): $200'000 + <strong>$2,7 Mio.</strong> Punitive Damages.
+    </div>
+    <div class="hbox blue" style="margin-top:10px;">
+      <strong>Realität:</strong> Mediale Wahrnehmung ist verzerrt. Nur sehr wenige Urteile enthalten Punitive Damages; exorbitante Urteile werden von höheren Instanzen meist massiv reduziert.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🤝 Rechtsdurchsetzung Telekom CH – ombudscom <span class="badge">PRÜFUNG</span></div>
+    <p>Bei Streit zwischen Kunde und Anbieter:</p>
+    <ol style="margin:10px 0 0 20px;color:var(--text2);font-size:14px;line-height:2.2;">
+      <li><strong>Schlichtung bei ombudscom</strong> (Art. 42 ff. FDV)</li>
+      <li>Zivilprozess (mit vorgängiger Schlichtung)</li>
+      <li>Betreibung (SchKG)</li>
+    </ol>
+    <div class="hbox blue" style="margin-top:14px;">
+      <strong>Kosten ombudscom:</strong><br>
+      Anbieter: CHF 200 – 3'000 (je nach Aufwand)<br>
+      Kunden: <strong>CHF 20.–</strong> Behandlungsgebühr (bei Missbrauch bis CHF 500)
+    </div>
+    <p style="margin-top:12px;font-size:13.5px;color:var(--text2);"><strong>Art. 8a Abs. 3 lit. d SchKG (seit 1.1.2019):</strong> Betreibungsämter geben nach 3 Monaten keine Auskunft über eine Betreibung, wenn der Schuldner ein Gesuch stellt – sofern kein Beseitigungsverfahren eingeleitet wurde. (Schutz vor ungerechtfertigten Einträgen.)</p>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="view" id="view-flashcards">
+  <div class="section-eyebrow">Prüfungsvorbereitung</div>
+  <div class="section-title">Flashcards</div>
+  <div class="section-subtitle">Klicke auf die Karte, um die Antwort zu sehen. Dann weiter zur nächsten.</div>
+
+  <div class="fc-nav">
+    <button class="btn btn-ghost" onclick="prevCard()">← Zurück</button>
+    <div class="fc-prog" id="fcProg">1 / 30</div>
+    <button class="btn btn-primary" onclick="nextCard()">Weiter →</button>
+  </div>
+
+  <div class="flashcard-wrap">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">Frage</div>
+        <div class="fc-content" id="fcQuestion">Lade...</div>
+        <div class="fc-hint">Klicken zum Aufdecken</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">Antwort</div>
+        <div class="fc-content" id="fcAnswer">Lade...</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:center;gap:12px;margin-top:8px;">
+    <button class="btn btn-ghost" onclick="markCard(false)" id="btnWrong" style="display:none;border-color:var(--danger);color:var(--danger);">✗ Nochmal</button>
+    <button class="btn btn-ghost" onclick="markCard(true)" id="btnRight" style="display:none;border-color:var(--accent3);color:var(--accent3);">✓ Gewusst</button>
+  </div>
+
+  <div id="fcScore" style="text-align:center;margin-top:16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);"></div>
+</div>
+
+<!-- QUIZ -->
+<div class="view" id="view-quiz">
+  <div class="section-eyebrow">Prüfungsvorbereitung</div>
+  <div class="section-title">Quiz</div>
+  <div class="section-subtitle">20 Fragen zum gesamten Stoff – wie eine echte Prüfung.</div>
+
+  <div id="quiz-container">
+    <div class="quiz-counter" id="quizCounter">Frage 1 / 20</div>
+    <div class="quiz-q" id="quizQ">Lade...</div>
+    <div class="quiz-options" id="quizOpts"></div>
+    <div class="quiz-explanation" id="quizExp"></div>
+    <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" style="display:none;">Nächste Frage →</button>
+  </div>
+
+  <div id="quiz-result" style="display:none;">
+    <div class="section-title" style="font-size:24px;">Quiz abgeschlossen! 🎉</div>
+    <div id="resultScore" class="score-badge"></div>
+    <p style="color:var(--text2);margin-bottom:20px;">Klicke auf "Quiz neu starten" um es nochmal zu versuchen.</p>
+    <button class="btn btn-primary" onclick="restartQuiz()">Quiz neu starten</button>
+  </div>
+</div>
+
+<!-- SPICKZETTEL -->
+<div class="view" id="view-spickzettel">
+  <div class="section-eyebrow">Prüfungsvorbereitung</div>
+  <div class="section-title">Spickzettel</div>
+  <div class="section-subtitle">Alles Wichtige auf einen Blick – für die letzte Stunde vor der Prüfung.</div>
+
+  <div class="card">
+    <div class="card-title">📚 Wichtigste Gesetze & Abkürzungen</div>
+    <div class="glossar-grid">
+      <div class="gitem"><div class="abbr">FMG</div><div class="full">Fernmeldegesetz</div></div>
+      <div class="gitem"><div class="abbr">FDV</div><div class="full">Verordnung über Fernmeldedienste</div></div>
+      <div class="gitem"><div class="abbr">KG</div><div class="full">Kartellgesetz (1995)</div></div>
+      <div class="gitem"><div class="abbr">UWG</div><div class="full">Gesetz gegen unlauteren Wettbewerb</div></div>
+      <div class="gitem"><div class="abbr">USG</div><div class="full">Umweltschutzgesetz</div></div>
+      <div class="gitem"><div class="abbr">NISV</div><div class="full">Verordnung über nichtionisierende Strahlung</div></div>
+      <div class="gitem"><div class="abbr">OR</div><div class="full">Obligationenrecht</div></div>
+      <div class="gitem"><div class="abbr">BV</div><div class="full">Bundesverfassung (18.4.1999)</div></div>
+      <div class="gitem"><div class="abbr">TUG</div><div class="full">Gesetz über die Organisation der Telekommunikationsunternehmung</div></div>
+      <div class="gitem"><div class="abbr">SchKG</div><div class="full">Schuldbetreibungs- und Konkursgesetz</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏛️ Behörden</div>
+    <div class="glossar-grid">
+      <div class="gitem"><div class="abbr">BAKOM</div><div class="full">Instruiert, bereitet vor, stellt Antrag</div></div>
+      <div class="gitem"><div class="abbr">ComCom</div><div class="full">Erlässt die Verfügung (entscheidet)</div></div>
+      <div class="gitem"><div class="abbr">WEKO</div><div class="full">Beurteilt Marktbeherrschung</div></div>
+      <div class="gitem"><div class="abbr">BVerwGer</div><div class="full">Beschwerdeinstanz (Art. 33 lit. f VGG)</div></div>
+      <div class="gitem"><div class="abbr">ombudscom</div><div class="full">Schlichtung Kunde ↔ Anbieter</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Schlüsselartikel</div>
+    <table class="tbl">
+      <thead><tr><th>Artikel</th><th>Inhalt</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Art. 1 FMG</strong></td><td>Zweck des FMG</td></tr>
+        <tr><td><strong>Art. 3 lit. e FMG</strong></td><td>Legaldefinition Interkonnektion</td></tr>
+        <tr><td><strong>Art. 11 FMG</strong></td><td>Netzzugang – 6 Formen (a–f)</td></tr>
+        <tr><td><strong>Art. 11a FMG</strong></td><td>Verhandlungsprimat / ComCom</td></tr>
+        <tr><td><strong>Art. 14 FMG</strong></td><td>Grundversorgungskonzession</td></tr>
+        <tr><td><strong>Art. 16 FMG</strong></td><td>Umfang der Grundversorgung</td></tr>
+        <tr><td><strong>Art. 5 KG</strong></td><td>Unzulässige Wettbewerbsabreden</td></tr>
+        <tr><td><strong>Art. 7 KG (Abs. 2 lit. a–d)</strong></td><td>Missbrauch marktbeherrschender Stellung</td></tr>
+        <tr><td><strong>Art. 8 UWG</strong></td><td>Missbräuchliche AGB</td></tr>
+        <tr><td><strong>Art. 1 OR</strong></td><td>Vertragsschluss</td></tr>
+        <tr><td><strong>Art. 363 OR</strong></td><td>Werkvertrag</td></tr>
+        <tr><td><strong>Art. 394 OR</strong></td><td>Auftrag</td></tr>
+        <tr><td><strong>Art. 4 + Anh. 1 NISV</strong></td><td>Anlagegrenzwerte</td></tr>
+        <tr><td><strong>Art. 13 + Anh. 2 NISV</strong></td><td>Immissionsgrenzwerte</td></tr>
+        <tr><td><strong>Art. 74 BV</strong></td><td>Umweltschutz-Kompetenz Bund</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ 5 Leitfälle <span class="badge orange">AUSWENDIG!</span></div>
+    <table class="tbl">
+      <thead><tr><th>Fall</th><th>Kernaussage</th><th>Zahl</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mobilfunkterminierung</strong><br><span style="font-size:11px;color:var(--text3);">BGE 137 II 199</span></td><td>Swisscom marktbeherrschend, Missbrauch Art. 7 II c KG (überhöhte Terminierungsgebühren)</td><td style="color:var(--warn)"><strong>CHF 333 Mio.</strong></td></tr>
+        <tr><td><strong>ADSL II</strong><br><span style="font-size:11px;color:var(--text3);">WEKO 2009</span></td><td>Kosten-Preis-Schere (margin squeeze)</td><td style="color:var(--warn)"><strong>CHF 219 Mio.</strong></td></tr>
+        <tr><td><strong>Office Connex</strong><br><span style="font-size:11px;color:var(--text3);">HGer ZH 2004</span></td><td>Vorwurf Verweigerung (Art. 7 II a) + Diskriminierung (Art. 7 II b)</td><td>—</td></tr>
+        <tr><td><strong>BGE 129 III 604</strong><br><span style="font-size:11px;color:var(--text3);">Télékiosque</span></td><td>Keine Überwachungspflicht des Anbieters → Kunde zahlt</td><td style="color:var(--warn)"><strong>CHF 15'956</strong></td></tr>
+        <tr><td><strong>BGE 128 II 168</strong><br><span style="font-size:11px;color:var(--text3);">Antenne</span></td><td>Beschwerdelegitimation ab 10% des Anlagegrenzwerts</td><td><strong>10%-Regel</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🧠 4 Begriffspaare zum Unterscheiden <span class="badge orange">PRÜFUNG</span></div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px;">
+      <div class="hbox blue">
+        <strong>1. Öffentliches Recht</strong> (Staat↔Bürger, Verfügung) vs. <strong>Privatrecht</strong> (Bürger↔Bürger, Vertrag)
+      </div>
+      <div class="hbox purple">
+        <strong>2. Immissionsgrenzwerte</strong> (überall, Gesundheit, lockerer) vs. <strong>Anlagegrenzwerte</strong> (empfindliche Nutzung, Vorsorge, strenger – Faktor 10!)
+      </div>
+      <div class="hbox green">
+        <strong>3. FMG</strong> (sektorspezifisch, ex ante, Marktöffnung) vs. <strong>KG</strong> (allgemein, ex post, Missbrauch sanktionieren) → <em>parallel anwendbar!</em>
+      </div>
+      <div class="hbox orange">
+        <strong>4. Civil Law</strong> (deduktiv, Gesetz primär) vs. <strong>Common Law</strong> (induktiv, Case Law primär)
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Falllösungs-Faustformel</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;">
+      <div style="background:rgba(79,127,255,.15);border-radius:8px;padding:10px 14px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">SCHRITT 1</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">Welches Recht?</div>
+        <div style="font-size:11px;color:var(--text3);">öffentlich / privat</div>
+      </div>
+      <span style="color:var(--text3);">→</span>
+      <div style="background:rgba(124,58,237,.1);border-radius:8px;padding:10px 14px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">SCHRITT 2</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">Welche Norm?</div>
+        <div style="font-size:11px;color:var(--text3);">Artikel nennen</div>
+      </div>
+      <span style="color:var(--text3);">→</span>
+      <div style="background:rgba(16,185,129,.08);border-radius:8px;padding:10px 14px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">SCHRITT 3</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">Tatbestand prüfen</div>
+        <div style="font-size:11px;color:var(--text3);">z.B. marktbeherrschend?</div>
+      </div>
+      <span style="color:var(--text3);">→</span>
+      <div style="background:rgba(245,158,11,.08);border-radius:8px;padding:10px 14px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">SCHRITT 4</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">Subsumtion</div>
+        <div style="font-size:11px;color:var(--text3);">Sachverhalt unter Norm</div>
+      </div>
+      <span style="color:var(--text3);">→</span>
+      <div style="background:rgba(79,127,255,.15);border-radius:8px;padding:10px 14px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">SCHRITT 5</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">Ergebnis</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ===== STATE =====
+const visited = new Set(['home']);
+const views = ['grundlagen','geschichte','netzzugang','grundversorgung','wettbewerb','vertrag','strahlung','rechtsvergleich'];
+
+// ===== NAVIGATION =====
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelector(`[data-view="${name}"]`)?.classList.add('active');
+  if (views.includes(name)) visited.add(name);
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = views.filter(v => visited.has(v)).length;
+  const pct = Math.round((done / views.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${done} / ${views.length} Themen erkundet`;
+  views.forEach(v => {
+    if (visited.has(v)) {
+      const el = document.querySelector(`[data-view="${v}"] .done-mark`);
+      if (!el) {
+        const item = document.querySelector(`[data-view="${v}"]`);
+        if (item) { const m = document.createElement('span'); m.className='done-mark'; m.textContent='✓'; item.appendChild(m); }
+      }
+    }
+  });
+}
+
+// ===== ACCORDION =====
+function toggleAcc(el) {
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.acc-arrow');
+  body.classList.toggle('open');
+  arrow.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+// ===== CASE CARDS =====
+function toggleCase(el) {
+  const body = el.nextElementSibling;
+  el.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ===== FLASHCARDS =====
+const flashcards = [
+  // JURISTISCHE GRUNDLAGEN
+  {q: "Was sind die 3 Voraussetzungen damit der Staat rechtmässig handeln darf?", a: "1. Gesetzliche Grundlage (ein Gesetz muss es erlauben)\n2. Öffentliches Interesse (Gemeinwohlzweck)\n3. Verhältnismässigkeit (geeignet, erforderlich, zumutbar)"},
+  {q: "Was ist der Unterschied zwischen öffentlichem Recht und Privatrecht?", a: "Öff. Recht: Staat ↔ Bürger (Über-/Unterordnung) → Instrument: Verfügung\nPrivatrecht: Bürger ↔ Bürger / Kunde ↔ Firma (Gleichordnung) → Instrument: Vertrag"},
+  {q: "Was ist eine Verfügung – und was ist sie NICHT?", a: "Verfügung = einseitiger, verbindlicher Behördenentscheid. Du wirst nicht gefragt, du bekommst einfach einen Brief.\nKein Vertrag – du hast nichts unterschrieben."},
+  {q: "Normenhierarchie: Was passiert, wenn eine Verordnung einem Gesetz widerspricht?", a: "Die Verordnung ist ungültig. Höheres Recht bricht niedrigeres immer.\nReihenfolge: Bundesverfassung → Gesetze → Verordnungen"},
+  {q: "Welches Gremium erlässt Gesetze? Welches erlässt Verordnungen?", a: "Gesetze → Parlament\nVerordnungen → Bundesrat (konkretisieren das Gesetz, dürfen ihm aber nicht widersprechen)"},
+  {q: "Nenne die 4 Entstehungsgründe einer Obligation (Verpflichtung).", a: "1. Vertrag ← wichtigster für diesen Kurs\n2. Unerlaubte Handlung (jemandem Schaden zufügen)\n3. Ungerechtfertigte Bereicherung\n4. Geschäftsführung ohne Auftrag"},
+  {q: "Wie entsteht ein Vertrag – und was gilt bei Schweigen?", a: "Vertrag = Antrag + Annahme (beide müssen einverstanden sein).\nSchweigen = Ablehnung (Regel). Ausnahme: bei besonderer Natur des Geschäfts oder nach den Umständen."},
+
+  // GESCHICHTE – ALLE JAHRESZAHLEN
+  {q: "Geschichte: Was passierte im Jahr 1922 im Schweizer Telekommunikationsrecht?", a: "Telegrafen- und Telefonverkehrsgesetz → Umfassendes PTT-Monopol.\nDer Staat kontrolliert alles: Dienste (Telefon, Telegramm, Telex, Fax), Netze UND Apparate."},
+  {q: "Geschichte: Was passierte im Jahr 1991 im Schweizer Telekommunikationsrecht?", a: "Fernmeldegesetz → Eingeschränktes PTT-Monopol.\nMonopol bleibt bei leitungsgebundenen Netzen + Telefon, aber Wettbewerb bei Teilnehmeranlagen und Datenübertragung.\nNeu: Schaffung des BAKOM."},
+  {q: "Geschichte: Was passierte im Jahr 1997 im Schweizer Telekommunikationsrecht?", a: "Fernmeldegesetz → Marktöffnung I.\nAufhebung des Netz- und Telefoniemonopols. Swisscom wird spezialgesetzliche AG.\nNeu: Konzessionspflicht, Interkonnektionsregime, Schaffung der ComCom."},
+  {q: "Geschichte: Was passierte 2006/2007 im Schweizer Telekommunikationsrecht?", a: "Fernmeldegesetz → Erweitertes Netzzugangsregime (Art. 11 FMG).\nLösung der 'Stolpersteine auf der letzten Meile' – Konkurrenten erhalten Zugang zum Anschlussnetz bis ins Haus."},
+  {q: "Geschichte: Was passierte 2019 / in Kraft 2021 im Schweizer Telekommunikationsrecht?", a: "Aktuelles FMG → Ausweitung des entbündelten Zugangs über alte Kupferleitungen hinaus.\nGrund: Glasfaserausbau in der Schweiz."},
+  {q: "In welchem Jahr wurde die ComCom gegründet und warum?", a: "1997 – im Rahmen der Marktöffnung I.\nComCom = Eidg. Kommunikationskommission. Braucht es als unabhängige Entscheidbehörde, weil der Staat nicht mehr Monopolist ist."},
+  {q: "In welchem Jahr wurde das BAKOM gegründet und was macht es?", a: "1991 – mit dem ersten liberalisierten FMG.\nBAKOM = Bundesamt für Kommunikation. Instruiert Verfahren, bereitet vor, stellt Anträge – ist aber keine Entscheidbehörde."},
+
+  // FMG INHALT
+  {q: "Was ist der Zweck des Fernmeldegesetzes – kurz zusammengefasst?", a: "Vielfältige, preiswerte, qualitativ hochstehende Fernmeldedienste für alle.\nKonkret: a) Grundversorgung, b) störungsfreier Verkehr, c) wirksamer Wettbewerb, d) Schutz vor Missbrauch, e) Kinderschutz."},
+  {q: "Was ist Interkonnektion – und warum braucht es das?", a: "Verbindung der Netze zweier Anbieter, damit ihre Kunden sich gegenseitig anrufen können.\nOhne Interkonnektion könntest du als Swisscom-Kunde niemanden bei Salt anrufen."},
+
+  // NETZZUGANG
+  {q: "Was ist eine 'essential facility' und was folgt daraus rechtlich?", a: "Eine Infrastruktur, die alle Wettbewerber brauchen, die aber nur einem gehört (z.B. letzte Meile = Kabel bis ins Haus).\nFolge: Der Inhaber wird gezwungen, Zugang zu gewähren – sonst kein fairer Wettbewerb möglich."},
+  {q: "Netzzugang: Wer muss Zugang gewähren, und zu welchen Bedingungen?", a: "Nur marktbeherrschende Anbieter müssen Zugang gewähren.\nBedingungen: transparent · nicht diskriminierend · kostenorientierte Preise (LRIC-Methode)."},
+  {q: "Nenne die 6 Formen des Netzzugangs (Art. 11 FMG).", a: "a) Entbündelter Teilnehmeranschluss (nackte Leitung bis zum Kunden)\nb) Schneller Bitstromzugang (befristet 4 Jahre)\nc) Verrechnung Teilnehmeranschlüsse Festnetz\nd) Interkonnektion\ne) Mietleitungen\nf) Zugang zu Kabelkanalisationen (Leerrohre)"},
+  {q: "Was bedeutet LRIC und wozu dient es beim Netzzugang?", a: "Long Run Incremental Cost = Methode zur Berechnung der Zugangspreise.\nZiel: Preise simulieren, wie sie bei echtem Wettbewerb entstehen würden – nicht überhöht durch Marktmacht."},
+  {q: "Was ist der Verhandlungsprimat und was passiert nach 3 Monaten?", a: "Verhandlungsprimat = Parteien müssen zuerst selbst verhandeln, Staat greift erst danach ein.\nNach 3 Monaten ohne Einigung → Partei kann bei der ComCom ein Gesuch stellen → ComCom verfügt die Bedingungen."},
+  {q: "Die 4 Behörden im Telekommunikationsrecht – wer macht was?", a: "BAKOM: instruiert, bereitet vor, stellt Antrag\nComCom: erlässt die Verfügung (entscheidet im Streit)\nWEKO: beurteilt ob jemand marktbeherrschend ist\nBVerwGer: Beschwerdeinstanz gegen Verfügungen"},
+
+  // GRUNDVERSORGUNG
+  {q: "Warum gibt es eine Grundversorgung – was ist das Problem ohne sie?", a: "Der Markt versorgt abgelegene Bergregionen nicht, weil das unrentabel ist.\nGrundversorgung = staatliches Sicherheitsnetz: garantiert allen Bevölkerungskreisen ein Basisangebot."},
+  {q: "Wer hat in der Schweiz aktuell die Grundversorgungskonzession und bis wann?", a: "Swisscom – hat sich immer als einzige beworben.\nAktuelle Konzession: 2024 bis Ende 2031, erteilt von der ComCom."},
+  {q: "FMG vs. Kartellgesetz: Was ist der Unterschied in der Stossrichtung?", a: "FMG: sektorspezifisch (nur Telekom), ex ante (vorausschauend), Ziel: Marktöffnung\nKG: allgemein (alle Branchen), ex post (nachträglich), Ziel: Missbrauch sanktionieren\n→ Beide können gleichzeitig angewendet werden!"},
+
+  // WETTBEWERBSRECHT
+  {q: "Was sind die 3 Pfeiler des Kartellgesetzes (KG)?", a: "1. Unzulässige Wettbewerbsabreden (Absprachen zwischen Firmen)\n2. Missbrauch marktbeherrschender Stellung\n3. Unternehmenszusammenschlüsse (Meldepflicht)"},
+  {q: "Was ist der Unterschied zwischen horizontalen und vertikalen Abreden?", a: "Horizontal = zwischen Konkurrenten auf gleicher Stufe (z.B. zwei Mobilfunkanbieter sprechen Preise ab)\nVertikal = zwischen verschiedenen Stufen (z.B. Hersteller und Händler vereinbaren Mindestpreis)"},
+  {q: "Missbrauch marktbeherrschender Stellung: Nenne die 4 verbotenen Verhaltensweisen.", a: "a) Verweigerung von Geschäftsbeziehungen (Liefer-/Bezugssperre)\nb) Diskriminierung von Handelspartnern\nc) Erzwingung unangemessener Preise\nd) Gezielte Preisunterbietung zur Verdrängung"},
+  {q: "Was ist eine missbräuchliche AGB-Klausel?", a: "AGB = Allgemeine Geschäftsbedingungen (Kleingedrucktes).\nMissbräuchlich = wenn sie in Treu und Glauben verletzender Weise ein erhebliches Ungleichgewicht zu Lasten des Konsumenten schafft."},
+
+  // FÄLLE
+  {q: "Fall Mobilfunkterminierung (2011): Was war das Problem und was war die Strafe?", a: "Problem: Swisscom Mobile verlangte überhöhte Terminierungsgebühren.\nUrteile: Missbrauch marktbeherrschender Stellung (Erzwingung unangemessener Preise) → Sanktion CHF 333 Mio."},
+  {q: "Fall ADSL II (2009): Was ist eine Kosten-Preis-Schere?", a: "Swisscom machte Verluste im Endkundengeschäft (Bluewin), holte das beim Wholesale wieder rein.\nFolge: Konkurrenten, die die Vorleistung kaufen müssen, können kein profitables Endprodukt anbieten. Sanktion: CHF 219 Mio."},
+  {q: "Fall Office Connex (2004): Was warf Sunrise Swisscom vor?", a: "Sunrise: Swisscom bietet Wholesale-Kunden nur Bandbreiten an, die kein vergleichbares Endkundenprodukt erlauben.\nVorwurf: Verweigerung von Geschäftsbeziehungen + Diskriminierung von Handelspartnern."},
+
+  // TELEFONVERTRAG
+  {q: "Warum ist der Telefonvertrag mit Swisscom Privatrecht und nicht öffentliches Recht?", a: "Weil das TUG das ausdrücklich so festlegt: Rechtsbeziehungen zwischen Swisscom und Kunden richten sich nach Privatrecht.\nStreitigkeiten → Zivilgericht (nicht Verwaltungsgericht)."},
+  {q: "Was ist ein Innominatvertrag – und warum ist der Festnetzvertrag einer?", a: "Innominatvertrag = 'unbenannter' Vertrag, im Gesetz nicht eigens geregelt.\nFestnetzvertrag hat gemischte Elemente aus Werkvertrag (Anschluss herstellen) + Mietvertrag (Leitung nutzen) → passt in keine Standardkategorie des OR."},
+  {q: "Fall Télékiosque (BGE 129 III 604): Sachverhalt und Kernaussage?", a: "A. telefoniert CHF 15'956 auf Mehrwertnummern (376 von 378 Anrufen!). Swisscom sperrt ihn, klagt auf Zahlung.\nKernaussage: Swisscom hat KEINE Pflicht, das Nutzungsverhalten zu überwachen. Kunde trägt das Risiko. A. muss alles zahlen."},
+
+  // STRAHLUNG
+  {q: "Wann trat die NISV in Kraft – und auf welcher Normenkette beruht sie?", a: "In Kraft seit 1. Februar 2000.\nNormenkette: Art. 74 BV (Umweltschutz-Kompetenz Bund) → Umweltschutzgesetz (USG) → NISV"},
+  {q: "Darf ein Kanton strengere Mobilfunk-Grenzwerte setzen als der Bund?", a: "Nein. Die NISV ist eine abschliessende bundesrechtliche Regelung – kein Raum für kantonale Vorschriften.\nKantone dürfen Antennen nur aus ortsplanerischen Gründen einschränken, nicht aus Strahlungsschutzgründen."},
+  {q: "Was ist der Unterschied zwischen Immissionsgrenzwert und Anlagegrenzwert?", a: "Immissionsgrenzwert: Gesundheitsschutz, gilt überall, ~40 V/m (internationaler ICNIRP-Standard)\nAnlagegrenzwert: Vorsorge, gilt nur in Wohnräumen/Büros/Schulen, nur 4 V/m → 10x strenger!\nMerke: Anlage = strenger, weil Vorsorge."},
+  {q: "Fall BGE 128 II 168 (Antenne, 2002): Wer darf Einsprache erheben?", a: "Personen, die in der Hauptstrahlrichtung der Antenne mindestens 10% des Anlagegrenzwerts ausgesetzt sind.\nPraktische Faustregel: ergibt einen Radius um die Antenne – wer drin ist, ist beschwerdeberechtigt."},
+
+  // RECHTSVERGLEICH
+  {q: "Civil Law vs. Common Law: Was ist der fundamentale Methodenunterschied?", a: "Civil Law (Schweiz, D, F): deduktiv – Richter wendet bestehendes Gesetz auf den Fall an.\nCommon Law (USA, UK): induktiv – Richter schaut was frühere Richter in ähnlichen Fällen entschieden haben (Präzedenzfall)."},
+  {q: "Was sind Punitive Damages – und gibt es das in der Schweiz?", a: "Strafschadenersatz: Geschädigter erhält weit mehr als sein effektiver Schaden (zur Abschreckung des Schädigers).\nIn der Schweiz NICHT vorgesehen – typisches Common-Law-Instrument.\nGM-Beispiel: $108 Mio. Schaden + $4,8 Mia. Strafe."},
+  {q: "Was ist ombudscom und was kostet ein Verfahren den Kunden?", a: "Schlichtungsstelle der Telekombranche für Streitigkeiten zwischen Kunden und Anbietern.\nKosten für Kunden: CHF 20.– Behandlungsgebühr (bei Missbrauch bis CHF 500).\nAnbieter zahlen: CHF 200–3'000 je nach Aufwand."},
+];
+
+let fcIdx = 0;
+let fcCorrect = 0;
+let fcTotal = 0;
+const fcResults = {};
+
+function renderCard() {
+  const c = flashcards[fcIdx];
+  document.getElementById('fcQuestion').textContent = c.q;
+  document.getElementById('fcAnswer').innerHTML = c.a.replace(/\n/g, '<br>');
+  document.getElementById('fcProg').textContent = `${fcIdx + 1} / ${flashcards.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('btnWrong').style.display = 'none';
+  document.getElementById('btnRight').style.display = 'none';
+}
+
+function flipCard() {
+  const fc = document.getElementById('flashcard');
+  fc.classList.toggle('flipped');
+  if (fc.classList.contains('flipped')) {
+    document.getElementById('btnWrong').style.display = 'inline-flex';
+    document.getElementById('btnRight').style.display = 'inline-flex';
+  }
+}
+
+function nextCard() { fcIdx = (fcIdx + 1) % flashcards.length; renderCard(); }
+function prevCard() { fcIdx = (fcIdx - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markCard(correct) {
+  fcTotal++;
+  if (correct) fcCorrect++;
+  document.getElementById('fcScore').textContent = `Gewusst: ${fcCorrect} / ${fcTotal}`;
+  nextCard();
+}
+
+// ===== QUIZ =====
+const quizData = [
+  {q: "Was ist der Unterschied zwischen einer 'Verfügung' und einem 'Vertrag'?", opts: ["Verfügung = privatrechtlich, Vertrag = öffentlich-rechtlich","Verfügung = einseitiger Behördenentscheid (öff. Recht), Vertrag = gegenseitige Vereinbarung (Privatrecht)","Beides sind öffentlich-rechtliche Instrumente","Beides sind privatrechtliche Instrumente"], a: 1, exp: "Die Verfügung ist das Instrument des öffentlichen Rechts (einseitig, hoheitlich). Der Vertrag ist das Instrument des Privatrechts (beidseitig, auf Konsens basierend)."},
+  {q: "Welche drei Voraussetzungen braucht staatliches Handeln laut öffentlichem Recht?", opts: ["Öffentliches Interesse, Wirtschaftlichkeit, Demokratie","Gesetzliche Grundlage, öffentliches Interesse, Verhältnismässigkeit","Gesetz, Bundesratsbeschluss, Volksabstimmung","Gesetzliche Grundlage, Effizienz, Transparenz"], a: 1, exp: "Dies ist das Kerntrio: 1. Gesetzliche Grundlage (Legalitätsprinzip), 2. Öffentliches Interesse, 3. Verhältnismässigkeit (geeignet, erforderlich, zumutbar)."},
+  {q: "In welchem Jahr wurde die Marktöffnung I im Telekommunikationsrecht eingeführt?", opts: ["1922","1991","1997","2007"], a: 2, exp: "1997: Das FMG hob das Netz- und Telefoniemonopol auf. Swisscom wurde eine spezialgesetzliche AG, die ComCom wurde gegründet."},
+  {q: "Was ist eine 'essential facility' im Telekommunikationsrecht?", opts: ["Eine besonders hochwertige Dienstleistung","Ein infrastrukturelles Element, auf das alle Wettbewerber angewiesen sind, das aber nur einem gehört","Ein staatliches Unternehmen","Eine Konzession für Grundversorgung"], a: 1, exp: "Die 'letzte Meile' (Anschlussnetz zum Haus) war historisch Swisscom. Ohne Zugang dazu konnten Konkurrenten nicht anbieten – also musste Swisscom Zugang gewähren."},
+  {q: "Art. 11 FMG verpflichtet marktbeherrschende Anbieter zu Netzzugang. Wie muss dieser erfolgen?", opts: ["Nur wenn der Staat es verlangt","Transparent, nicht diskriminierend, zu kostenorientierten Preisen","Nur an grosse Unternehmen","Nur innerhalb der Schweiz"], a: 1, exp: "Die drei Schlüsselbedingungen: transparent (klare Bedingungen), nicht diskriminierend (alle Anbieter gleich), kostenorientiert (LRIC-Methode, Art. 54 FDV)."},
+  {q: "Welche Zugangsform ist gem. Art. 11 FMG auf 4 Jahre befristet?", opts: ["a) Entbündelter Teilnehmeranschluss","b) Schneller Bitstromzugang","d) Interkonnektion","f) Kabelkanalisationen"], a: 1, exp: "Lit. b: der schnelle Bitstromzugang ist auf 4 Jahre befristet – er war als Übergangsregelung gedacht."},
+  {q: "Welche Behörde beurteilt, ob ein Unternehmen 'marktbeherrschend' ist?", opts: ["BAKOM","ComCom","WEKO","BVerwGer"], a: 2, exp: "Die WEKO (Wettbewerbskommission) beurteilt die Marktstellung. Erst wenn feststeht, dass ein Anbieter marktbeherrschend ist, gilt die Zugangspflicht nach Art. 11 FMG."},
+  {q: "Wie lange müssen Parteien verhandeln, bevor die ComCom eingreift (Art. 11a FMG)?", opts: ["1 Monat","3 Monate","6 Monate","1 Jahr"], a: 1, exp: "3 Monate. Erst nach erfolglosem Verhandeln für mindestens 3 Monate kann eine Partei bei der ComCom ein Gesuch stellen (auf Antrag BAKOM)."},
+  {q: "Was ist der Zweck der Grundversorgung (Art. 14/16 FMG)?", opts: ["Monopol für Swisscom sichern","Allen Bevölkerungskreisen in allen Landesteilen ein Basisangebot garantieren","Luxusdienste fördern","Ausländische Anbieter fernhalten"], a: 1, exp: "Die Grundversorgung ist das staatliche Sicherheitsnetz: dort, wo der Markt versagt (z.B. abgelegene Bergregionen), wird durch Konzession sichergestellt, dass alle Zugang haben."},
+  {q: "Wer erhielt die schweizerische Grundversorgungskonzession 2024–2031?", opts: ["Salt","Sunrise","Swisscom","Coop"], a: 2, exp: "Swisscom hat sich als einzige Anbieterin beworben und erhielt die Konzession. Die ComCom erteilte sie für 2024 bis Ende 2031."},
+  {q: "Was schützt das KG, was das UWG?", opts: ["KG: Konsumenten; UWG: Unternehmen","KG: Wettbewerb als Institution; UWG: fairen Wettbewerb / Konsumenten","Beide schützen nur staatliche Unternehmen","KG: internationale Handelsbeziehungen; UWG: inländische Märkte"], a: 1, exp: "KG (1995): schützt den Wettbewerb als Institution gegen Kartelle und Marktmachtmissbrauch. UWG: schützt gegen unlautere Praktiken (z.B. missbräuchliche AGB nach Art. 8 UWG)."},
+  {q: "Was ist eine 'horizontale Abrede' nach Art. 5 KG?", opts: ["Absprache zwischen Unternehmen verschiedener Stufen","Absprache zwischen Konkurrenten auf gleicher Marktstufe","Vertrag zwischen Unternehmen und Staat","Vereinbarung über Netzzugang"], a: 1, exp: "Horizontal = zwischen Konkurrenten auf der gleichen Marktstufe (z.B. zwei Mobilfunkanbieter vereinbaren Preise). Vertikal = zwischen verschiedenen Stufen (z.B. Hersteller ↔ Händler)."},
+  {q: "Im Fall Mobilfunkterminierung (BGE 137 II 199): Welcher Art. KG wurde verletzt?", opts: ["Art. 5 KG (Kartellabrede)","Art. 7 Abs. 2 lit. c KG (unangemessene Preise)","Art. 7 Abs. 2 lit. a KG (Verweigerung)","Art. 9 KG (Zusammenschluss)"], a: 1, exp: "Art. 7 Abs. 2 lit. c KG: Erzwingung unangemessener Preise. Die Terminierungsgebühren von Swisscom Mobile waren zu hoch. Sanktion: CHF 333 Mio."},
+  {q: "Warum ist der Telefonabonnementsvertrag ein 'Innominatvertrag'?", opts: ["Weil er öffentlich-rechtlich ist","Weil er im OR nicht geregelt ist und gemischte Elemente hat","Weil er nur bei Swisscom vorkommt","Weil er keine rechtliche Wirkung hat"], a: 1, exp: "Innominatvertrag = 'unbenannt', d.h. nicht im OR geregelt. Er hat Elemente des Werkvertrags (Art. 363 OR) und des Mietvertrags. Er ist zudem ein Dauerschuldverhältnis."},
+  {q: "Kernaussage BGE 129 III 604 (Télékiosque): Muss Swisscom den Kunden überwachen?", opts: ["Ja, als Grundversorgungskonzessionärin ist sie verpflichtet","Nein, keine Nebenpflicht zur Überwachung des Nutzungsverhaltens (finanziell)","Ja, bei Beträgen über CHF 1'000","Nein, aber bei Mehrwertdiensten schon"], a: 1, exp: "Das Bundesgericht: Keine generelle Warn- oder Überwachungspflicht. Der Kunde trägt das Risiko seiner Nutzung. → Zahlt die vollen CHF 15'955.95."},
+  {q: "Was ist der Unterschied zwischen Immissions- und Anlagegrenzwert (NISV)?", opts: ["Beide sind identisch","Immissionsgrenzwert: Gesamtbelastung überall, 40 V/m; Anlagegrenzwert: pro Anlage, empf. Nutzung, 4 V/m (10x strenger)","Anlagegrenzwert ist weniger streng","Immissionsgrenzwert gilt nur in der Wohnung"], a: 1, exp: "Immissionsgrenzwert (Art. 13 NISV): Gesundheitsschutz, überall, 40 V/m bei 900 MHz (ICNIRP). Anlagegrenzwert (Art. 4 NISV): Vorsorge, nur bei empfindlicher Nutzung, 4 V/m – 10x strenger."},
+  {q: "Darf ein Kanton eigene Mobilfunk-Grenzwerte setzen?", opts: ["Ja, Kantone haben da volle Autonomie","Nein, die NISV ist abschliessend – kein Raum für kantonale Regelungen","Nur wenn der Bundesrat zustimmt","Ja, aber nur für 5G"], a: 1, exp: "Die NISV ist eine abschliessende bundesrechtliche Regelung. Kantone dürfen keine eigenen Strahlungsgrenzwerte setzen – dies ist Bundessache."},
+  {q: "BGE 128 II 168: Ab wann ist man beschwerdelegitimiert gegen eine Antenne?", opts: ["Bei subjektivem Unwohlsein","Wenn die Strahlung ≥ 10% des Anlagegrenzwerts in der Hauptstrahlrichtung erreicht","Immer, wenn man in 500m Radius wohnt","Nur wenn man elektrosensitiv ist"], a: 1, exp: "Die 10%-Faustregel: Wer in der Hauptstrahlrichtung mindestens 10% des Anlagegrenzwerts ausgesetzt ist, hat Beschwerdelegitimation. Praktikabel, unabhängig von Einzelfallberechnungen."},
+  {q: "Was unterscheidet Civil Law von Common Law?", opts: ["Civil Law basiert auf Case Law, Common Law auf Gesetzen","Civil Law ist deduktiv (Gesetz→Fall), Common Law induktiv (Fall→Regel)","Civil Law gilt in USA, Common Law in der Schweiz","Kein Unterschied, nur geografisch"], a: 1, exp: "Civil Law (CH, D, F): deduktiv, primär Gesetze, Professoren hoch angesehen. Common Law (UK, USA): induktiv, primär Case Law, Richter hoch angesehen."},
+  {q: "Was ist die Behandlungsgebühr für Kunden bei ombudscom?", opts: ["Gratis","CHF 20.– (bei Missbrauch bis CHF 500)","CHF 200.–","CHF 1'000.–"], a: 1, exp: "Für Kunden: CHF 20.– Behandlungsgebühr. Bei missbräuchlicher Einleitung bis CHF 500.–. Für Anbieter: CHF 200 – 3'000 (nach Aufwand/Komplexität)."},
+];
+
+let quizIdx = 0;
+let quizScore = 0;
+let quizAnswered = false;
+let quizOrder = [];
+
+function initQuiz() {
+  quizOrder = [...Array(quizData.length).keys()].sort(() => Math.random() - 0.5);
+  quizIdx = 0; quizScore = 0; quizAnswered = false;
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  quizAnswered = false;
+  const q = quizData[quizOrder[quizIdx]];
+  document.getElementById('quizCounter').textContent = `Frage ${quizIdx + 1} / ${quizData.length}`;
+  document.getElementById('quizQ').textContent = q.q;
+  document.getElementById('quizNextBtn').style.display = 'none';
+  const exp = document.getElementById('quizExp');
+  exp.style.display = 'none';
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = o;
+    btn.onclick = () => answerQ(i, btn);
+    opts.appendChild(btn);
+  });
+}
+
+function answerQ(idx, btn) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizData[quizOrder[quizIdx]];
+  const allBtns = document.querySelectorAll('.quiz-opt');
+  allBtns.forEach(b => { b.classList.add('disabled'); b.onclick = null; });
+  if (idx === q.a) { btn.classList.add('correct'); quizScore++; }
+  else { btn.classList.add('wrong'); allBtns[q.a].classList.add('correct'); }
+  const exp = document.getElementById('quizExp');
+  exp.innerHTML = `<strong>${idx === q.a ? '✓ Richtig!' : '✗ Falsch.'}</strong> ${q.exp}`;
+  exp.style.display = 'block';
+  document.getElementById('quizNextBtn').style.display = 'inline-flex';
+}
+
+function nextQuestion() {
+  quizIdx++;
+  if (quizIdx >= quizData.length) {
+    document.getElementById('quiz-container').style.display = 'none';
+    document.getElementById('quiz-result').style.display = 'block';
+    const pct = Math.round((quizScore / quizData.length) * 100);
+    const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '📚';
+    document.getElementById('resultScore').innerHTML = `${emoji} ${quizScore} / ${quizData.length} richtig (${pct}%)`;
+  } else { renderQuestion(); }
+}
+
+function restartQuiz() { initQuiz(); }
+
+// ===== INIT =====
+renderCard();
+initQuiz();
+</script>
+</body>
+</html>
